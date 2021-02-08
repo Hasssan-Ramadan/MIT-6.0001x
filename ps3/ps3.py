@@ -96,6 +96,8 @@ def get_word_score(word, n):
     word = word.lower()
     first_component = 0
     for char in word:
+        if char == '*':
+            continue
         first_component += SCRABBLE_LETTER_VALUES[char]
     second_component = max(1, 7*len(word)-3*(n-len(word)))
     return first_component * second_component
@@ -146,8 +148,8 @@ def deal_hand(n):
 
     hand = {}
     num_vowels = int(math.ceil(n / 3))
-
-    for i in range(num_vowels):
+    hand['*'] = 1
+    for i in range(num_vowels-1):
         x = random.choice(VOWELS)
         hand[x] = hand.get(x, 0) + 1
 
@@ -202,13 +204,34 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     returns: boolean
     """
+    test = []
+    test_list = []
+    word_copy = word
     word = word.lower()
     new_hand = hand.copy()
-    for char in word:
-        new_hand[char] = new_hand.get(char, 0) - 1
-        if new_hand[char] < 0:
+    if '*' not in word:
+        for char in word:
+            new_hand[char] = new_hand.get(char, 0) - 1
+            if new_hand[char] < 0:
+                return False
+        return word in word_list
+    elif '*' in word_copy:
+        for i in range(len(VOWELS)):
+            if word_copy.replace('*', VOWELS[i]) in word_list:
+                test_list.append(1)
+                for j in range(len(word_copy)):
+                    if word_copy[j] in hand and hand[word_copy[j]] >= word_copy.count(word_copy[j]):
+                        test.append(1)
+                    else:
+                        test.append(0)
+                if sum(test) == len(word_copy):
+                    return True
+                else:
+                    return False
+            else:
+                test_list.append(0)
+        if sum(test_list) != len(VOWELS):
             return False
-    return word in word_list
 
 #
 # Problem #5: Playing a hand
