@@ -180,8 +180,11 @@ def update_hand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
-
-    pass  # TO DO... Remove this line when you implement this function
+    new_hand = hand.copy()
+    word = word.lower()
+    for char in word:
+        new_hand[char] = max(new_hand.get(char, 0) - 1, 0)
+    return new_hand
 
 #
 # Problem #3: Test word validity
