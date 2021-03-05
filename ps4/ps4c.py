@@ -1,8 +1,3 @@
-# Problem Set 4C
-# Name: <your name here>
-# Collaborators:
-# Time Spent: x:xx
-
 import string
 from ps4a import get_permutations
 
